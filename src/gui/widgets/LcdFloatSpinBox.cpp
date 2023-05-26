@@ -49,6 +49,7 @@ namespace lmms::gui
 
 
 LcdFloatSpinBox::LcdFloatSpinBox(int numWhole, int numFrac, const QString& name, QWidget* parent) :
+	QWidget(parent),
 	FloatModelView(new FloatModel(0, 0, 0, 0, nullptr, name, true), this),
 	m_wholeDisplay(numWhole, parent, name, false),
 	m_fractionDisplay(numFrac, parent, name, true),
@@ -62,6 +63,7 @@ LcdFloatSpinBox::LcdFloatSpinBox(int numWhole, int numFrac, const QString& name,
 
 
 LcdFloatSpinBox::LcdFloatSpinBox(int numWhole, int numFrac, const QString& style, const QString& name, QWidget* parent) :
+	QWidget(parent),
 	FloatModelView(new FloatModel(0, 0, 0, 0, nullptr, name, true), this),
 	m_wholeDisplay(numWhole, style, parent, name, false),
 	m_fractionDisplay(numFrac, style, parent, name, true),
@@ -100,6 +102,7 @@ void LcdFloatSpinBox::layoutSetup(const QString &style)
 	outerLayout->addSpacing(9);
 	outerLayout->setContentsMargins(0, 0, 0, 0);
 	outerLayout->setSizeConstraint(QLayout::SetFixedSize);
+	this->setFixedHeight(32);
 	this->setLayout(outerLayout);
 }
 
@@ -107,9 +110,10 @@ void LcdFloatSpinBox::layoutSetup(const QString &style)
 void LcdFloatSpinBox::update()
 {
 	const int whole = static_cast<int>(model()->value());
-	const float fraction = model()->value() - whole;
+	float fraction = std::abs(model()->value() - whole);
+	fraction += model()->step<float>() * 0.9f;// Fix roundoff errors
 	const int intFraction = fraction * std::pow(10.f, m_fractionDisplay.numDigits());
-	m_wholeDisplay.setValue(whole);
+	m_wholeDisplay.setValue(model()->value());
 	m_fractionDisplay.setValue(intFraction);
 
 	QWidget::update();
@@ -126,6 +130,10 @@ void LcdFloatSpinBox::contextMenuEvent(QContextMenuEvent* event)
 
 void LcdFloatSpinBox::mousePressEvent(QMouseEvent* event)
 {
+	// switch between integer and fractional step based on cursor position
+	if (event->x() < m_wholeDisplay.width()) { m_intStep = true; }
+	else { m_intStep = false; }
+	
 	if (event->button() == Qt::LeftButton &&
 		!(event->modifiers() & Qt::ControlModifier) &&
 		event->y() < m_wholeDisplay.cellHeight() + 2)
@@ -149,10 +157,6 @@ void LcdFloatSpinBox::mousePressEvent(QMouseEvent* event)
 
 void LcdFloatSpinBox::mouseMoveEvent(QMouseEvent* event)
 {
-	// switch between integer and fractional step based on cursor position
-	if (event->x() < m_wholeDisplay.width()) { m_intStep = true; }
-	else { m_intStep = false; }
-
 	if (m_mouseMoving)
 	{
 		int dy = event->globalY() - m_origMousePos.y();
