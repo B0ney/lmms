@@ -56,6 +56,7 @@ static inline QString ensureTrailingSlash(const QString & s )
 	return s;
 }
 
+constexpr char* lmmsRcFileName = ".lmmsrc_nightly.xml"; 
 
 ConfigManager * ConfigManager::s_instanceOfMe = nullptr;
 
@@ -660,13 +661,13 @@ void ConfigManager::initPortableWorkingDir()
 {
 	QString applicationPath = qApp->applicationDirPath();
 	m_workingDir = applicationPath + "/lmms-workspace/";
-	m_lmmsRcFile = applicationPath + "/.lmmsrc.xml";
+	m_lmmsRcFile = applicationPath + '/' + lmmsRcFileName;
 }
 
 void ConfigManager::initInstalledWorkingDir()
 {
 	m_workingDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/lmms/";
-	m_lmmsRcFile = QDir::home().absolutePath() +"/.lmmsrc.xml";
+	m_lmmsRcFile = QDir::home().absolutePath() +'/' + lmmsRcFileName;
 	// Detect < 1.2.0 working directory as a courtesy
 	if ( QFileInfo( QDir::home().absolutePath() + "/lmms/projects/" ).exists() )
 		m_workingDir = QDir::home().absolutePath() + "/lmms/";
@@ -700,7 +701,7 @@ void ConfigManager::initDevelopmentWorkingDir()
 			}
 			if (line.startsWith("lmms_BINARY_DIR:")) {
 				m_lmmsRcFile = line.section('=', -1).trimmed() +  QDir::separator() +
-							   ".lmmsrc.xml";
+							   lmmsRcFileName;
 				done++;
 			}
 			if (done == 2)
