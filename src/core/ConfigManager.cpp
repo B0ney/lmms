@@ -56,7 +56,7 @@ static inline QString ensureTrailingSlash(const QString & s )
 	return s;
 }
 
-constexpr char* lmmsRcFileName = ".lmmsrc_nightly.xml"; 
+const char * lmmsRcFileName = ".lmmsrc_nightly.xml"; 
 
 ConfigManager * ConfigManager::s_instanceOfMe = nullptr;
 
