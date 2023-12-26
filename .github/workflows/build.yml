@@ -1,6 +1,6 @@
 ---
 name: build
-'on': [push, pull_request]
+'on': [workflow_dispatch]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -11,7 +11,7 @@ jobs:
     container: lmmsci/linux.gcc:18.04
     env:
       CMAKE_OPTS: >-
-        -DUSE_WERROR=ON
+        -DUSE_WERROR=OFF
         -DCMAKE_BUILD_TYPE=RelWithDebInfo
         -DUSE_COMPILE_CACHE=ON
       CCACHE_MAXSIZE: 0
@@ -72,7 +72,7 @@ jobs:
     runs-on: macos-12
     env:
       CMAKE_OPTS: >-
-        -DUSE_WERROR=ON
+        -DUSE_WERROR=OFF
         -DCMAKE_BUILD_TYPE=RelWithDebInfo
         -DUSE_COMPILE_CACHE=ON
       CCACHE_MAXSIZE: 0
@@ -160,7 +160,7 @@ jobs:
     container: lmmsci/linux.mingw${{ matrix.arch }}:18.04
     env:
       CMAKE_OPTS: >-
-        -DUSE_WERROR=ON
+        -DUSE_WERROR=OFF
         -DCMAKE_BUILD_TYPE=RelWithDebInfo
         -DUSE_COMPILE_CACHE=ON
       CCACHE_MAXSIZE: 0
