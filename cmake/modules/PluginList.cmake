@@ -42,9 +42,12 @@ SET(LMMS_PLUGIN_LIST
 	LadspaBrowser
 	LadspaEffect
 	LOMM
+	Limiter
 	Lv2Effect
 	Lv2Instrument
 	Lb302
+	Mercury
+	Mercury2
 	MidiImport
 	MidiExport
 	MultitapEcho
@@ -52,6 +55,7 @@ SET(LMMS_PLUGIN_LIST
 	Nes
 	OpulenZ
 	Organic
+	Phaser
 	FreeBoy
 	Patman
 	PeakControllerEffect
