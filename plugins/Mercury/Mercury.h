@@ -29,7 +29,6 @@
 #include "Instrument.h"
 #include "InstrumentView.h"
 #include "Knob.h"
-#include "MemoryManager.h"
 #include "BasicFilters.h"
 #include "RingBuffer.h"
 
@@ -52,7 +51,6 @@ class MercuryView;
 
 class sSynth
 {
-	MM_OPERATORS
 public:
 	sSynth( NotePlayHandle * _nph, const sample_rate_t _sample_rate );
 	virtual ~sSynth();
