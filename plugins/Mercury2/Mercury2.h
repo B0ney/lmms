@@ -36,7 +36,6 @@
 #include "Graph.h"
 #include "GuiApplication.h"
 #include "MainWindow.h"
-#include "MemoryManager.h"
 #include <QPainter>
 #include "qmath.h"
 #include <xmmintrin.h>
@@ -127,7 +126,6 @@ private:
 
 class MSynth
 {
-	MM_OPERATORS
 public:
 	MSynth( NotePlayHandle * nph, float sampleRate, int chordScatterDelay, float impulseLP, float impulseLPFalloff, float partialRand );
 	virtual ~MSynth();
