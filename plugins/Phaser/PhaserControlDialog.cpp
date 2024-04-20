@@ -145,7 +145,7 @@ PhaserControlDialog::PhaserControlDialog(PhaserControls* controls) :
 
 	ComboBox * m_modeBox = new ComboBox(this);
 	m_modeBox->setGeometry(6, 6, 74, 22);
-	m_modeBox->setFont(pointSize<8>(m_modeBox->font()));
+	m_modeBox->setFont(adjustedToPixelSize(m_modeBox->font(), 10)); // 8
 	m_modeBox->setModel(&m_controls->m_modeModel);
 	m_modeBox->setToolTip(tr("Change Phaser feedback circuit"));
 
