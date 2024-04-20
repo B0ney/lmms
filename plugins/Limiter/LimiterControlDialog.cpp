@@ -90,7 +90,7 @@ LimiterControlDialog::LimiterControlDialog(LimiterControls* controls) :
 	
 	ComboBox* ditherTypeBox = new ComboBox(this);
 	ditherTypeBox->setGeometry(327, 65, 60, 22);
-	ditherTypeBox->setFont(pointSize<8>(ditherTypeBox->font()));
+	ditherTypeBox->setFont(adjustedToPixelSize(ditherTypeBox->font(), 10)); // 8
 	//ditherTypeBox->move(327, 65);
 	ditherTypeBox->setModel(&m_controls->m_ditherTypeModel);
 	
