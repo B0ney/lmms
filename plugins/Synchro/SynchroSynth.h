@@ -135,7 +135,7 @@ class SynchroInstrument : public Instrument {
 	public:
 	SynchroInstrument(InstrumentTrack* instrument_track);
 	void playNote(NotePlayHandle* nph, sampleFrame* working_buffer) override;
-	f_cnt_t desiredReleaseFrames() const override { return static_cast<f_cnt_t>(128); };
+	f_cnt_t desiredReleaseFrames() const { return static_cast<f_cnt_t>(128); };
 	//Flags flags() const override { return IsSingleStreamed; };
 	void saveSettings(QDomDocument& doc, QDomElement& thisElement) override;
 	void loadSettings(const QDomElement& thiselement) override;
