@@ -74,7 +74,7 @@ Plugin::Descriptor PLUGIN_EXPORT limiter_plugin_descriptor =
 LimiterEffect::LimiterEffect(Model* parent, const Descriptor::SubPluginFeatures::Key* key) :
 	Effect(&limiter_plugin_descriptor, parent, key),
 	m_limiterControls(this),
-	m_sampleRate(Engine::audioEngine()->processingSampleRate()),
+	m_sampleRate(Engine::audioEngine()->outputSampleRate()),
 	m_lufsProcessor(m_sampleRate),
 	m_displayHandler(m_sampleRate, 120),
 	m_peakHold{signalsmith::envelopes::PeakHold<float>(1),
@@ -468,7 +468,7 @@ bool LimiterEffect::processAudioBuffer(sampleFrame* buf, const fpp_t frames)
 
 void LimiterEffect::changeSampleRate()
 {
-	m_sampleRate = Engine::audioEngine()->processingSampleRate();
+	m_sampleRate = Engine::audioEngine()->outputSampleRate();
 	const int oversampleStages = m_limiterControls.m_oversampleModel.value();
 	const int oversampleMult = 1 << oversampleStages;
 	
