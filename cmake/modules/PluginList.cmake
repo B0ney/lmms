@@ -69,7 +69,7 @@ SET(LMMS_PLUGIN_LIST
 	StereoEnhancer
 	StereoMatrix
 	Stk
-	Synchro
+	# Synchro
 	TapTempo
 	VstBase
 	Vestige
