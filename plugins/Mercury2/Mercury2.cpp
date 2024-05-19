@@ -1117,9 +1117,9 @@ void Mercury2::play( sampleFrame * working_buffer )
 				}
 				float uniformIndex = linearInterpolate(effectiveIndex, effectiveIndex / (newNoteFreqs.size() - 1), m_chordScatterUniformity.value());
 				
-				int chordScatterDelay = uniformIndex * std::abs(m_chordScatter.value()) * Engine::audioEngine()->processingSampleRate();
+				int chordScatterDelay = uniformIndex * std::abs(m_chordScatter.value()) * Engine::audioEngine()->outputSampleRate();
 				
-				currentNote->m_pluginData = new MSynth( currentNote, Engine::audioEngine()->processingSampleRate(), chordScatterDelay, m_impulseLP.value(), m_impulseLPFalloff.value(), m_partialRand.value() );
+				currentNote->m_pluginData = new MSynth( currentNote, Engine::audioEngine()->outputSampleRate(), chordScatterDelay, m_impulseLP.value(), m_impulseLPFalloff.value(), m_partialRand.value() );
 				m_lastNoteFreq = currentNote->frequency();
 				if (m_mercury2View) {emit m_mercury2View->updatePartialPixmap();}
 			}
@@ -1133,7 +1133,7 @@ void Mercury2::play( sampleFrame * working_buffer )
 
 			if ( currentNote->totalFramesPlayed() == 0 || currentNote->m_pluginData == NULL )
 			{
-				currentNote->m_pluginData = new MSynth( currentNote, Engine::audioEngine()->processingSampleRate(), 0, m_impulseLP.value(), m_impulseLPFalloff.value(), m_partialRand.value() );
+				currentNote->m_pluginData = new MSynth( currentNote, Engine::audioEngine()->outputSampleRate(), 0, m_impulseLP.value(), m_impulseLPFalloff.value(), m_partialRand.value() );
 				m_lastNoteFreq = currentNote->frequency();
 				if (m_mercury2View) {emit m_mercury2View->updatePartialPixmap();}
 			}
@@ -1159,7 +1159,7 @@ void Mercury2::play( sampleFrame * working_buffer )
 	{
 		for( fpp_t frame = 0; frame < frames; ++frame )
 		{
-			m_tremoloCurrentPhase += m_tremoloRate.value() / (float)Engine::audioEngine()->processingSampleRate();
+			m_tremoloCurrentPhase += m_tremoloRate.value() / (float)Engine::audioEngine()->outputSampleRate();
 
 			float tremoloVolumeChange = qFastSin(m_tremoloCurrentPhase * F_PI * 2.f) * m_tremoloAmount.value() + 1.f;
 			working_buffer[frame][0] *= tremoloVolumeChange;
@@ -1198,7 +1198,7 @@ void Mercury2::updateComb(MSynth * mSynthInstance)
 
 f_cnt_t Mercury2::desiredReleaseFrames() const
 {
-	return int(m_release.value() * 0.001f * Engine::audioEngine()->processingSampleRate()) + 256 + 1;
+	return int(m_release.value() * 0.001f * Engine::audioEngine()->outputSampleRate()) + 256 + 1;
 }
 
 
@@ -1681,7 +1681,7 @@ Mercury2View::Mercury2View( Instrument * _instrument,
 	connect(&m_m->m_brightness, SIGNAL(dataChanged()), this, SLOT(updatePartialPixmap()));
 	connect(&m_m->m_partialFreqMax, SIGNAL(dataChanged()), this, SLOT(updatePartialPixmap()));
 	
-	m_dummyNote = new MSynth( nullptr, Engine::audioEngine()->processingSampleRate(), 0, m_m->m_impulseLP.value(), m_m->m_impulseLPFalloff.value(), m_m->m_partialRand.value() );
+	m_dummyNote = new MSynth( nullptr, Engine::audioEngine()->outputSampleRate(), 0, m_m->m_impulseLP.value(), m_m->m_impulseLPFalloff.value(), m_m->m_partialRand.value() );
 }
 
 
@@ -1725,7 +1725,7 @@ void Mercury2View::updateDisplay()
 
 void Mercury2View::drawPartialPixmap()
 {
-	float sampleRate = Engine::audioEngine()->processingSampleRate();
+	float sampleRate = Engine::audioEngine()->outputSampleRate();
 
 	float noteFreq = m_m->m_lastNoteFreq;
 	m_m->updatePartials(m_dummyNote, noteFreq);
