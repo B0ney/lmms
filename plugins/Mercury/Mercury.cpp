@@ -557,7 +557,7 @@ Mercury::Mercury( InstrumentTrack * _instrument_track ) :
 	m_delayFeedback( 0.5, 0, 1, 0.0001, this, tr( "Delay Feedback" ) ),
 	m_exciterLeak( 0, 0, 1, 0.0001, this, tr( "Exciter Leakage" ) )
 {
-	m_sampleRate = Engine::audioEngine()->processingSampleRate();
+	m_sampleRate = Engine::audioEngine()->outputSampleRate();
 
 	for (int i = 0; i < 4; ++i)
 	{
@@ -674,7 +674,7 @@ void Mercury::play( sampleFrame * _working_buffer )
 
 		if ( currentNote->totalFramesPlayed() == 0 || currentNote->m_pluginData == NULL )
 		{
-			currentNote->m_pluginData = new sSynth( currentNote, Engine::audioEngine()->processingSampleRate() );
+			currentNote->m_pluginData = new sSynth( currentNote, Engine::audioEngine()->outputSampleRate() );
 		}
 	}
 	
@@ -889,7 +889,7 @@ void Mercury::play( sampleFrame * _working_buffer )
 
 f_cnt_t Mercury::desiredReleaseFrames() const
 {
-	return int(m_exciterRelease.value() * 0.001f * Engine::audioEngine()->processingSampleRate()) + 256 + 1;
+	return int(m_exciterRelease.value() * 0.001f * Engine::audioEngine()->outputSampleRate()) + 256 + 1;
 }
 
 
@@ -1072,7 +1072,7 @@ void Mercury::playNote( NotePlayHandle * _n, sampleFrame * _working_buffer )
 {
 	/*if ( _n->totalFramesPlayed() == 0 || _n->m_pluginData == NULL )
 	{
-		_n->m_pluginData = new sSynth( _n, Engine::audioEngine()->processingSampleRate() );
+		_n->m_pluginData = new sSynth( _n, Engine::audioEngine()->outputSampleRate() );
 	}
 
 	const fpp_t frames = _n->framesLeftForCurrentPeriod();

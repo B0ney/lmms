@@ -64,7 +64,7 @@ PhaserEffect::PhaserEffect(Model* parent, const Descriptor::SubPluginFeatures::K
 {
 	m_currentPeak[0] = m_currentPeak[1] = PHA_NOISE_FLOOR;
 
-	m_lfo = new QuadratureLfo(Engine::audioEngine()->processingSampleRate());
+	m_lfo = new QuadratureLfo(Engine::audioEngine()->outputSampleRate());
 	m_lfo->setFrequency(1.0 / m_phaserControls.m_rateModel.value());
 	
 	// Prepare the oversampling filters
@@ -106,12 +106,12 @@ PhaserEffect::~PhaserEffect()
 
 void PhaserEffect::calcAttack()
 {
-	m_attCoeff = pow(10.f, (PHA_LOG / (m_phaserControls.m_attackModel.value() * 0.001)) / Engine::audioEngine()->processingSampleRate());
+	m_attCoeff = pow(10.f, (PHA_LOG / (m_phaserControls.m_attackModel.value() * 0.001)) / Engine::audioEngine()->outputSampleRate());
 }
 
 void PhaserEffect::calcRelease()
 {
-	m_relCoeff = pow(10.f, (-PHA_LOG / (m_phaserControls.m_releaseModel.value() * 0.001)) / Engine::audioEngine()->processingSampleRate());
+	m_relCoeff = pow(10.f, (-PHA_LOG / (m_phaserControls.m_releaseModel.value() * 0.001)) / Engine::audioEngine()->outputSampleRate());
 }
 
 void PhaserEffect::calcOutGain()
@@ -138,7 +138,7 @@ bool PhaserEffect::processAudioBuffer(sampleFrame* buf, const fpp_t frames)
 		return false;
 	}
 
-	sample_rate_t sample_rate =  Engine::audioEngine()->processingSampleRate();
+	sample_rate_t sample_rate =  Engine::audioEngine()->outputSampleRate();
 
 	double outSum = 0.0;
 	const float d = dryLevel();
@@ -334,7 +334,7 @@ bool PhaserEffect::processAudioBuffer(sampleFrame* buf, const fpp_t frames)
 			// Calculate delay amount to find read location
 			float readLoc = m_filtFeedbackLoc -
 				qMin(abs(delay + ((realLfo[i] + realInFollow[i]) * delayControl)), 20.f) *
-				0.001f * Engine::audioEngine()->processingSampleRate();
+				0.001f * Engine::audioEngine()->outputSampleRate();
 
 			if (readLoc < 0) {readLoc += m_delayBufSize;}
 			float readLocFrac = fraction(readLoc);
@@ -599,15 +599,15 @@ sample_t PhaserEffect::calcAllpassFilter(sample_t inSamp, sample_rate_t Fs, int 
 
 void PhaserEffect::changeSampleRate()
 {
-	m_lfo->setSampleRate(Engine::audioEngine()->processingSampleRate());
-	m_twoPiOverSr = F_2PI / Engine::audioEngine()->processingSampleRate();
-	m_dcTimeConst = 44.1f / Engine::audioEngine()->processingSampleRate();
+	m_lfo->setSampleRate(Engine::audioEngine()->outputSampleRate());
+	m_twoPiOverSr = F_2PI / Engine::audioEngine()->outputSampleRate();
+	m_dcTimeConst = 44.1f / Engine::audioEngine()->outputSampleRate();
 	calcAttack();
 	calcRelease();
 
 	for (int b = 0; b < 2; ++b)
 	{
-		m_delayBufSize = Engine::audioEngine()->processingSampleRate() * 0.03 + 1;
+		m_delayBufSize = Engine::audioEngine()->outputSampleRate() * 0.03 + 1;
 		m_filtDelayBuf[b].resize(m_delayBufSize);
 	}
 }

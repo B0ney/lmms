@@ -252,7 +252,7 @@ double SynchroSynth::nextSample(
 		) {
 	const double radians_per_subsample =
 		m_nph->frequency() * D_2PI /
-		(Engine::audioEngine()->processingSampleRate() * SYNCHRO_OVERSAMPLING_FACTOR);
+		(Engine::audioEngine()->outputSampleRate() * SYNCHRO_OVERSAMPLING_FACTOR);
 
 	m_modulatorPhase = reduce_phase(m_modulatorPhase + radians_per_subsample * exp2(modulatorOctave));
 	double phase_modulation = synchro_waveform(
