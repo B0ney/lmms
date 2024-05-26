@@ -26,6 +26,8 @@
 #include <QDomElement>
 #include <qmath.h>
 #include "Architect2.h"
+#include "SampleLoader.h"
+#include "PathUtil.h"
 #include "embed.h"
 #include "plugin_export.h"
 
@@ -45,7 +47,7 @@ Plugin::Descriptor PLUGIN_EXPORT architect2_plugin_descriptor =
 	QT_TRANSLATE_NOOP( "pluginBrowser", "granular synthesizer" ),
 	"Lost Robot <r94231/at/gmail/dot/com>",
 	0x0100,
-	Plugin::Instrument,
+	Plugin::Type::Instrument,
 	new PluginPixmapLoader( "logo" ),
 	nullptr,
 	nullptr
@@ -356,22 +358,32 @@ void Architect2::loadSettings( const QDomElement & _this )
 	m_sampleLocation = _this.attribute( "sampleLocation" );
 	if( m_sampleLocation != "" )
 	{
-		QString fileName = m_sampleLocation;
-		SampleBuffer * sampleBuffer = new SampleBuffer;
-		sampleBuffer->setAudioFile( fileName );
-		int filelength = sampleBuffer->sampleLength();
+		QString file_name = m_sampleLocation;
 
-		sampleBuffer->dataReadLock();
-		double lengthOfSample = sampleBuffer->frames();
-		m_soundSample[0].clear();
-		m_soundSample[1].clear();
-
-		for( int i = 0; i < lengthOfSample; ++i )
+		// TODO
+		if (QFileInfo(PathUtil::toAbsolute(file_name)).exists())
 		{
-			m_soundSample[0].push_back(sampleBuffer->data()[i][0]);
-			m_soundSample[1].push_back(sampleBuffer->data()[i][1]);
+			SampleBuffer * sample_buffer = new SampleBuffer(file_name);
+
+			int filelength = sample_buffer->size();
+
+			m_soundSample[0].clear();
+			m_soundSample[1].clear();
+
+			double lengthOfSample = sample_buffer->size();
+			for( int i = 0; i < lengthOfSample; ++i )
+			{
+				m_soundSample[0].push_back(sample_buffer->data()[i][0]);
+				m_soundSample[1].push_back(sample_buffer->data()[i][1]);
+			}
+
+		} else {
+			
 		}
-		sampleBuffer->dataUnlock();
+		
+
+		std::cout << "m_sampleLocation is not \"\"\n";
+		
 	}
 	else
 	{
@@ -402,12 +414,12 @@ QString Architect2::nodeName() const
 
 
 
-
+// TODO
 void Architect2::playNote( NotePlayHandle * _n, sampleFrame * _working_buffer )
 {
 	if ( _n->totalFramesPlayed() == 0 || _n->m_pluginData == NULL )
 	{
-		_n->m_pluginData = new aSynthGroup( _n, Engine::audioEngine()->processingSampleRate(), m_soundSample, m_position.value() );
+		_n->m_pluginData = new aSynthGroup( _n, Engine::audioEngine()->outputSampleRate(), m_soundSample, m_position.value() );
 	}
 
 	const fpp_t frames = _n->framesLeftForCurrentPeriod();
@@ -476,79 +488,79 @@ Architect2View::Architect2View( Instrument * _instrument,
 								"artwork" ) );
 	setPalette( pal );
 	
-	m_volumeKnob = new Knob( knobDark_28, this );
+	m_volumeKnob = new Knob( KnobType::Dark28, this );
 	m_volumeKnob->move( 6, 201 );
 	m_volumeKnob->setHintText( tr( "Volume" ), "" );
 
-	m_positionKnob = new Knob( knobDark_28, this );
+	m_positionKnob = new Knob( KnobType::Dark28, this );
 	m_positionKnob->move( 46, 201 );
 	m_positionKnob->setHintText( tr( "Position" ), "" );
 
-	m_grainSizeKnob = new Knob( knobDark_28, this );
+	m_grainSizeKnob = new Knob( KnobType::Dark28, this );
 	m_grainSizeKnob->move( 86, 201 );
 	m_grainSizeKnob->setHintText( tr( "Grain Size" ), "" );
 	
-	m_grainSizeKeytrackKnob = new Knob( knobDark_28, this );
+	m_grainSizeKeytrackKnob = new Knob( KnobType::Dark28, this );
 	m_grainSizeKeytrackKnob->move( 86, 01 );
 	m_grainSizeKeytrackKnob->setHintText( tr( "Grain Size Keytracking" ), "" );
 
-	m_speedKnob = new Knob( knobDark_28, this );
+	m_speedKnob = new Knob( KnobType::Dark28, this );
 	m_speedKnob->move( 126, 201 );
 	m_speedKnob->setHintText( tr( "Speed" ), "" );
 
-	m_sprayKnob = new Knob( knobDark_28, this );
+	m_sprayKnob = new Knob( KnobType::Dark28, this );
 	m_sprayKnob->move( 166, 201 );
 	m_sprayKnob->setHintText( tr( "Spray" ), "" );
 
-	m_fmAmountKnob = new Knob( knobDark_28, this );
+	m_fmAmountKnob = new Knob( KnobType::Dark28, this );
 	m_fmAmountKnob->move( 6, 161 );
 	m_fmAmountKnob->setHintText( tr( "FM Amount" ), "" );
 
-	m_fmFreqKnob = new Knob( knobDark_28, this );
+	m_fmFreqKnob = new Knob( KnobType::Dark28, this );
 	m_fmFreqKnob->move( 46, 161 );
 	m_fmFreqKnob->setHintText( tr( "FM Frequency" ), "" );
 
-	m_pitchRandKnob = new Knob( knobDark_28, this );
+	m_pitchRandKnob = new Knob( KnobType::Dark28, this );
 	m_pitchRandKnob->move( 86, 161 );
 	m_pitchRandKnob->setHintText( tr( "Pitch Randomness" ), "" );
 
-	m_ampRandKnob = new Knob( knobDark_28, this );
+	m_ampRandKnob = new Knob( KnobType::Dark28, this );
 	m_ampRandKnob->move( 126, 161 );
 	m_ampRandKnob->setHintText( tr( "Amplitude Randomness" ), "" );
 
-	m_dropRandKnob = new Knob( knobDark_28, this );
+	m_dropRandKnob = new Knob( KnobType::Dark28, this );
 	m_dropRandKnob->move( 166, 161 );
 	m_dropRandKnob->setHintText( tr( "Drop Chance" ), "" );
 
-	m_dropAmpKnob = new Knob( knobDark_28, this );
+	m_dropAmpKnob = new Knob( KnobType::Dark28, this );
 	m_dropAmpKnob->move( 206, 161 );
 	m_dropAmpKnob->setHintText( tr( "Drop Amplitude" ), "" );
 
-	m_grainSpreadKnob = new Knob( knobDark_28, this );
+	m_grainSpreadKnob = new Knob( KnobType::Dark28, this );
 	m_grainSpreadKnob->move( 6, 121 );
 	m_grainSpreadKnob->setHintText( tr( "Grain Stereo Spread" ), "" );
 
-	m_grainRandKnob = new Knob( knobDark_28, this );
+	m_grainRandKnob = new Knob( KnobType::Dark28, this );
 	m_grainRandKnob->move( 46, 121 );
 	m_grainRandKnob->setHintText( tr( "Grain Size Randomness" ), "" );
 
-	m_windowModeKnob = new Knob( knobDark_28, this );
+	m_windowModeKnob = new Knob( KnobType::Dark28, this );
 	m_windowModeKnob->move( 86, 121 );
 	m_windowModeKnob->setHintText( tr( "Window Mode" ), "" );
 
-	m_windowCurveKnob = new Knob( knobDark_28, this );
+	m_windowCurveKnob = new Knob( KnobType::Dark28, this );
 	m_windowCurveKnob->move( 126, 121 );
 	m_windowCurveKnob->setHintText( tr( "Window Curve" ), "" );
 
-	m_windowSliceKnob = new Knob( knobDark_28, this );
+	m_windowSliceKnob = new Knob( KnobType::Dark28, this );
 	m_windowSliceKnob->move( 166, 121 );
 	m_windowSliceKnob->setHintText( tr( "Window Slice" ), "" );
 
-	m_voiceNumKnob = new Knob( knobDark_28, this );
+	m_voiceNumKnob = new Knob( KnobType::Dark28, this );
 	m_voiceNumKnob->move( 16, 81 );
 	m_voiceNumKnob->setHintText( tr( "Voice Number" ), "" );
 
-	m_formantKnob = new Knob( knobDark_28, this );
+	m_formantKnob = new Knob( KnobType::Dark28, this );
 	m_formantKnob->move( 56, 81 );
 	m_formantKnob->setHintText( tr( "Formant" ), "" );
 
@@ -595,31 +607,33 @@ void Architect2View::modelChanged()
 }
 
 
-
+// TODO
 void Architect2View::usrWaveClicked()
 {
+	QString af = SampleLoader::openAudioFile();
+	if (af.isEmpty()) { return; }
+
 	Architect2 * b = castModel<Architect2>();
 
-	const double sample_rate = Engine::audioEngine()->processingSampleRate();
+	const double sample_rate = Engine::audioEngine()->outputSampleRate();
+	SampleBuffer * sample_buffer = new SampleBuffer(af);
 
-	SampleBuffer * sampleBuffer = new SampleBuffer;
-	QString fileName = sampleBuffer->openAndSetWaveformFile();
-	int filelength = sampleBuffer->sampleLength();
-	if( fileName.isEmpty() == false )
+	QString file_name = sample_buffer->audioFile();
+
+	if (file_name.isEmpty()) {
+		return;
+	}
+	
+	b->m_sampleLocation = file_name;
+
+	b->m_soundSample[0].clear();
+	b->m_soundSample[1].clear();
+
+	double lengthOfSample = sample_buffer->size();
+	for( int i = 0; i < lengthOfSample; ++i )
 	{
-		sampleBuffer->dataReadLock();
-		double lengthOfSample = sampleBuffer->frames();
-		b->m_soundSample[0].clear();
-		b->m_soundSample[1].clear();
-
-		for( int i = 0; i < lengthOfSample; ++i )
-		{
-			b->m_soundSample[0].push_back(sampleBuffer->data()[i][0]);
-			b->m_soundSample[1].push_back(sampleBuffer->data()[i][1]);
-		}
-		sampleBuffer->dataUnlock();
-		
-		b->m_sampleLocation = fileName;
+		b->m_soundSample[0].push_back(sample_buffer->data()[i][0]);
+		b->m_soundSample[1].push_back(sample_buffer->data()[i][1]);
 	}
 }
 
