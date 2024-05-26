@@ -24,6 +24,7 @@ ENDIF()
 SET(LMMS_PLUGIN_LIST
 	${MINIMAL_LIST}
 	Amplifier
+	Architect2
 	BassBooster
 	BitInvader
 	Bitcrush
