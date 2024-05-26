@@ -165,7 +165,7 @@ bool LimiterEffect::processAudioBuffer(sampleFrame* buf, const fpp_t frames)
 	
 	const float dcCoeff = (F_2PI * dcFreq) / m_sampleRate;
 	
-	int oversampleVal = 1 << oversampling;
+	const int oversampleVal = 1 << oversampling;
 	
 	float inVolDisplayNext[2] = {};
 	float outVolDisplayNext[2] = {};
