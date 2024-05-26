@@ -30,7 +30,7 @@
 #include "InstrumentView.h"
 #include "AutomatableModel.h"
 #include "Knob.h"
-#include "MemoryManager.h"
+// #include "MemoryManager.h"
 #include "PixmapButton.h"
 #include "base64.h"
 #include "Engine.h"
@@ -57,7 +57,6 @@ class Architect2View;
 
 class aSynth
 {
-	MM_OPERATORS
 public:
 	aSynth( NotePlayHandle * _nph, const sample_rate_t _sample_rate, std::vector<float> (&soundSample)[2], float position );
 	virtual ~aSynth();
