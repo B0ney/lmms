@@ -244,12 +244,17 @@ bool LimiterEffect::processAudioBuffer(sampleFrame* buf, const fpp_t frames)
 		const float linkAmountType = std::min(std::max(0.f, (crestMono - 5.f) / 12.f), 1.f);
 		m_linkAmount = linearInterpolate(stereoLinkRelease, stereoLinkTransient, linkAmountType);
 		
-		float overOuts[2][oversampleVal] = {{}};
+		// float overOuts[2][oversampleVal] = {{}};
+		std::vector<float> overOuts[2] = { 
+			std::vector<float>(oversampleVal), 
+			std::vector<float>(oversampleVal),
+		};
+
 		if (oversampleVal > 1)
 		{
 			// Upsample the audio with HIIR via OversamplingHelpers.h.
-			m_upsampler[0].process(overOuts[0], buf[f][0]);
-			m_upsampler[1].process(overOuts[1], buf[f][1]);
+			m_upsampler[0].process(overOuts[0].data(), buf[f][0]);
+			m_upsampler[1].process(overOuts[1].data(), buf[f][1]);
 		}
 		else
 		{
@@ -358,8 +363,8 @@ bool LimiterEffect::processAudioBuffer(sampleFrame* buf, const fpp_t frames)
 		if (oversampleVal > 1)
 		{
 			// Downsample the audio with HIIR via OversamplingHelpers.h.
-			s[0] = m_downsampler[0].process(overOuts[0]);
-			s[1] = m_downsampler[1].process(overOuts[1]);
+			s[0] = m_downsampler[0].process(overOuts[0].data());
+			s[1] = m_downsampler[1].process(overOuts[1].data());
 		}
 		else
 		{
