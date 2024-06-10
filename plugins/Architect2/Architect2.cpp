@@ -377,6 +377,9 @@ void Architect2::loadSettings( const QDomElement & _this )
 				m_soundSample[1].push_back(sample_buffer->data()[i][1]);
 			}
 
+			delete(sample_buffer);
+
+
 		} else {
 			
 		}
@@ -402,6 +405,7 @@ void Architect2::loadSettings( const QDomElement & _this )
 		m_soundSample[0].push_back( 0 );
 		m_soundSample[1].push_back( 0 );
 	}
+
 }
 
 
@@ -635,6 +639,8 @@ void Architect2View::usrWaveClicked()
 		b->m_soundSample[0].push_back(sample_buffer->data()[i][0]);
 		b->m_soundSample[1].push_back(sample_buffer->data()[i][1]);
 	}
+
+	delete(sample_buffer);
 }
 
 }
