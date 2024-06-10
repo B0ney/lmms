@@ -4,11 +4,13 @@ if(LMMS_HAVE_GIG)
 	SET(CMAKE_AUTOUIC ON)
 
 	# Required for not crashing loading files with libgig
-	add_compile_options("-fexceptions")
+	SET(GCC_COVERAGE_COMPILE_FLAGS "-fexceptions")
+	add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
 
 	# disable deprecated check for mingw-x-libgig
 	if(LMMS_BUILD_WIN32)
-		add_compile_options("-Wno-deprecated")
+		SET(GCC_GIG_COMPILE_FLAGS "-Wno-deprecated")
+		add_definitions(${GCC_GIG_COMPILE_FLAGS})
 	endif(LMMS_BUILD_WIN32)
 
 	link_directories(${GIG_LIBRARY_DIRS})
