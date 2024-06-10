@@ -363,22 +363,19 @@ void Architect2::loadSettings( const QDomElement & _this )
 		// TODO
 		if (QFileInfo(PathUtil::toAbsolute(file_name)).exists())
 		{
-			SampleBuffer * sample_buffer = new SampleBuffer(file_name);
+			SampleBuffer sample_buffer = SampleBuffer(file_name);
 
-			int filelength = sample_buffer->size();
+			int filelength = sample_buffer.size();
 
 			m_soundSample[0].clear();
 			m_soundSample[1].clear();
 
-			double lengthOfSample = sample_buffer->size();
+			double lengthOfSample = sample_buffer.size();
 			for( int i = 0; i < lengthOfSample; ++i )
 			{
-				m_soundSample[0].push_back(sample_buffer->data()[i][0]);
-				m_soundSample[1].push_back(sample_buffer->data()[i][1]);
+				m_soundSample[0].push_back(sample_buffer.data()[i][0]);
+				m_soundSample[1].push_back(sample_buffer.data()[i][1]);
 			}
-
-			delete(sample_buffer);
-
 
 		} else {
 			
@@ -620,9 +617,9 @@ void Architect2View::usrWaveClicked()
 	Architect2 * b = castModel<Architect2>();
 
 	const double sample_rate = Engine::audioEngine()->outputSampleRate();
-	SampleBuffer * sample_buffer = new SampleBuffer(af);
+	SampleBuffer sample_buffer = SampleBuffer(af);
 
-	QString file_name = sample_buffer->audioFile();
+	QString file_name = sample_buffer.audioFile();
 
 	if (file_name.isEmpty()) {
 		return;
@@ -633,14 +630,12 @@ void Architect2View::usrWaveClicked()
 	b->m_soundSample[0].clear();
 	b->m_soundSample[1].clear();
 
-	double lengthOfSample = sample_buffer->size();
+	double lengthOfSample = sample_buffer.size();
 	for( int i = 0; i < lengthOfSample; ++i )
 	{
-		b->m_soundSample[0].push_back(sample_buffer->data()[i][0]);
-		b->m_soundSample[1].push_back(sample_buffer->data()[i][1]);
+		b->m_soundSample[0].push_back(sample_buffer.data()[i][0]);
+		b->m_soundSample[1].push_back(sample_buffer.data()[i][1]);
 	}
-
-	delete(sample_buffer);
 }
 
 }
