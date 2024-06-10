@@ -1,8 +1,7 @@
 /*
- * GranularPitchShifterControls.cpp - controls for granularpitchshifter effect
+ * GranularPitchShifterControls.cpp
  *
- * Copyright (c) 2014 Vesa Kivimäki <contact/dot/diizy/at/nbl/dot/fi>
- * Copyright (c) 2008-2014 Tobias Doerffel <tobydox/at/users.sourceforge.net>
+ * Copyright (c) 2024 Lost Robot <r94231/at/gmail/dot/com>
  *
  * This file is part of LMMS - https://lmms.io
  *
@@ -43,7 +42,8 @@ GranularPitchShifterControls::GranularPitchShifterControls(GranularPitchShifterE
 	m_posrandSpreadModel(0.f, 0.f, 1.f, 0.0001f, this, tr("Position Randomization Stereo Spread")),
 	m_prefilterModel(1.f, 0.f, 1.f, 1.f, this, tr("Prefilter")),
 	m_densityModel(1.f, 1.f, 16.f, 0.0001f, this, tr("Density")),
-	m_glideModel(0.01f, 0.f, 0.1f, 0.0001f, this, tr("Glide"))
+	m_glideModel(0.01f, 0.f, 0.1f, 0.0001f, this, tr("Glide")),
+	m_minLatencyModel(0.f, 0.f, 1.f, 0.00001f, this, tr("Minimum Latency"))
 {
 	m_pitchModel.setScaleLogarithmic(true);
 	m_pitchSpreadModel.setScaleLogarithmic(true);
@@ -52,6 +52,7 @@ GranularPitchShifterControls::GranularPitchShifterControls(GranularPitchShifterE
 	m_posrandSpreadModel.setScaleLogarithmic(true);
 	m_densityModel.setScaleLogarithmic(true);
 	m_glideModel.setScaleLogarithmic(true);
+	m_minLatencyModel.setScaleLogarithmic(true);
 	
 	m_pitchModel.setInitValue(0);
 }
@@ -69,6 +70,7 @@ void GranularPitchShifterControls::loadSettings(const QDomElement& parent)
 	m_prefilterModel.loadSettings(parent, "prefilter");
 	m_densityModel.loadSettings(parent, "density");
 	m_glideModel.loadSettings(parent, "glide");
+	m_minLatencyModel.loadSettings(parent, "minLatency");
 }
 
 
@@ -84,6 +86,7 @@ void GranularPitchShifterControls::saveSettings(QDomDocument& doc, QDomElement& 
 	m_prefilterModel.saveSettings(doc, parent, "prefilter");
 	m_densityModel.saveSettings(doc, parent, "density");
 	m_glideModel.saveSettings(doc, parent, "glide");
+	m_minLatencyModel.saveSettings(doc, parent, "minLatency");
 }
 
 

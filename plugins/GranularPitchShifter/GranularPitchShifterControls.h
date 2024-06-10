@@ -1,8 +1,7 @@
 /*
- * GranularPitchShifterControls.h - controls for bassboosterx -effect
+ * GranularPitchShifterControls.h
  *
- * Copyright (c) 2014 Vesa Kivimäki <contact/dot/diizy/at/nbl/dot/fi>
- * Copyright (c) 2008-2014 Tobias Doerffel <tobydox/at/users.sourceforge.net>
+ * Copyright (c) 2024 Lost Robot <r94231/at/gmail/dot/com>
  *
  * This file is part of LMMS - https://lmms.io
  *
@@ -70,6 +69,7 @@ private:
 	FloatModel m_prefilterModel;
 	FloatModel m_densityModel;
 	FloatModel m_glideModel;
+	FloatModel m_minLatencyModel;
 
 	friend class gui::GranularPitchShifterControlDialog;
 	friend class GranularPitchShifterEffect;

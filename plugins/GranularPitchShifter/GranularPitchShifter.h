@@ -1,8 +1,7 @@
 /*
- * GranularPitchShifter.h - granularpitchshifter-effect-plugin
+ * GranularPitchShifter.h
  *
- * Copyright (c) 2014 Vesa Kivimäki <contact/dot/diizy/at/nbl/dot/fi>
- * Copyright (c) 2006-2014 Tobias Doerffel <tobydox/at/users.sourceforge.net>
+ * Copyright (c) 2024 Lost Robot <r94231/at/gmail/dot/com>
  *
  * This file is part of LMMS - https://lmms.io
  *
@@ -128,6 +127,7 @@ private:
 	float m_glideCoef = 0.f;
 	float m_targetRatio = 1.001f;
 	float m_targetRatioInv = 1.f / 1.001f;
+	float m_shapeK = 0;
 	
 	friend class GranularPitchShifterControls;
 };

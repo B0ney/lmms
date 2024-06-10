@@ -1,8 +1,7 @@
 /*
- * GranularPitchShifterControlDialog.cpp - control dialog for granularpitchshifter effect
+ * GranularPitchShifterControlDialog.cpp
  *
- * Copyright (c) 2014 Vesa Kivimäki <contact/dot/diizy/at/nbl/dot/fi>
- * Copyright (c) 2006-2014 Tobias Doerffel <tobydox/at/users.sourceforge.net>
+ * Copyright (c) 2024 Lost Robot <r94231/at/gmail/dot/com>
  *
  * This file is part of LMMS - https://lmms.io
  *
@@ -60,6 +59,7 @@ GranularPitchShifterControlDialog::GranularPitchShifterControlDialog(GranularPit
 	makeKnob(107, 15, tr("PREFILTER"), tr("Prefilter:"), "", &controls->m_prefilterModel);
 	makeKnob(207, 15, tr("DENSITY"), tr("Density:"), "x", &controls->m_densityModel);
 	makeKnob(257, 65, tr("GLIDE"), tr("Glide:"), " seconds", &controls->m_glideModel);
+	makeKnob(307, 65, tr("MINLATENCY"), tr("Minimum Latency:"), " seconds", &controls->m_minLatencyModel);
 }
 
 } // namespace lmms::gui

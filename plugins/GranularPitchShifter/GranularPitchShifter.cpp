@@ -1,8 +1,7 @@
 /*
- * GranularPitchShifter.cpp - A native granularpitchshifter effect plugin with sample-exact amplification
+ * GranularPitchShifter.cpp
  *
- * Copyright (c) 2014 Vesa Kivimäki <contact/dot/diizy/at/nbl/dot/fi>
- * Copyright (c) 2006-2014 Tobias Doerffel <tobydox/at/users.sourceforge.net>
+ * Copyright (c) 2024 Lost Robot <r94231/at/gmail/dot/com>
  *
  * This file is part of LMMS - https://lmms.io
  *
@@ -71,9 +70,9 @@ extern "C"
 Plugin::Descriptor PLUGIN_EXPORT granularpitchshifter_plugin_descriptor =
 {
 	LMMS_STRINGIFY(PLUGIN_NAME),
-	"GranularPitchShifter",
-	QT_TRANSLATE_NOOP("PluginBrowser", "A native granularpitchshifter plugin"),
-	"Vesa Kivimäki <contact/dot/diizy/at/nbl/dot/fi>",
+	"Granular Pitch Shifter",
+	QT_TRANSLATE_NOOP("PluginBrowser", "Granular pitch shifter"),
+	"Lost Robot <r94231/at/gmail/dot/com>",
 	0x0100,
 	Plugin::Type::Effect,
 	new PluginPixmapLoader("logo"),
@@ -90,11 +89,13 @@ GranularPitchShifterEffect::GranularPitchShifterEffect(Model* parent, const Desc
 	m_prefilter({BasicFilters<1>(44100), BasicFilters<1>(44100)})
 {
 	autoQuitModel()->setValue(autoQuitModel()->maxValue());
-	changeSampleRate();
-	m_grains.reserve(8);// arbitrary
 	
 	m_prefilter[0].setFilterType(BasicFilters<1>::FilterType::DoubleLowPass);
 	m_prefilter[1].setFilterType(BasicFilters<1>::FilterType::DoubleLowPass);
+	
+	m_grains.reserve(8);// arbitrary
+	
+	changeSampleRate();
 }
 
 
@@ -116,12 +117,15 @@ bool GranularPitchShifterEffect::processAudioBuffer(sampleFrame* buf, const fpp_
 	const float prefilter = m_granularpitchshifterControls.m_prefilterModel.value();
 	const float density = m_granularpitchshifterControls.m_densityModel.value();
 	const float glide = m_granularpitchshifterControls.m_glideModel.value();
+	const int minLatency = m_granularpitchshifterControls.m_minLatencyModel.value() * m_sampleRate;
 	
 	if (glide != m_oldGlide)
 	{
 		m_oldGlide = glide;
 		m_glideCoef = std::exp(-std::log((1.f + m_targetRatio) / m_targetRatio) / (glide * m_sampleRate));
 	}
+	
+	m_shapeK = cosWindowApproxK(shape);
 
 	for (fpp_t f = 0; f < frames; ++f)
 	{
@@ -131,7 +135,7 @@ bool GranularPitchShifterEffect::processAudioBuffer(sampleFrame* buf, const fpp_
 		bool pitchChanged = false;
 		for (int i = 0; i < 2; ++i)
 		{
-			float targetVal = pitch + pitchSpread * (i ? -1 : 1);
+			float targetVal = pitch + pitchSpread * (i ? 1 : -1);
 			
 			if (targetVal == m_truePitch[i]) { continue; }
 			pitchChanged = true;
@@ -181,10 +185,10 @@ bool GranularPitchShifterEffect::processAudioBuffer(sampleFrame* buf, const fpp_
 			}
 			
 			std::array<int, 2> placeThing;
+			int latency = std::max(int(std::max(sizeSamples * (std::max(m_speed[0], m_speed[1]) - 1.), 0.) + 3.f), minLatency);// few extra samples of latency for safety
 			for (int i = 0; i < 2; ++i)
 			{
-				int latency = std::max(sizeSamples * (m_speed[i] - 1.), 0.);
-				placeThing[i] = m_writePoint - latency - posrandResult[i] - 3.f;// few extra samples of latency for safety
+				placeThing[i] = m_writePoint - latency - posrandResult[i];
 				if (placeThing[i] < 0) {placeThing[i] += m_ringBufLength;}
 			}
 			m_grains.push_back(GranularPitchShifterGrain(0, placeThing[0], placeThing[1]));
@@ -208,7 +212,7 @@ bool GranularPitchShifterEffect::processAudioBuffer(sampleFrame* buf, const fpp_
 			if (m_grains[i].m_readPoint[0] >= m_ringBufLength) { m_grains[i].m_readPoint[0] -= m_ringBufLength; }
 			if (m_grains[i].m_readPoint[1] >= m_ringBufLength) { m_grains[i].m_readPoint[1] -= m_ringBufLength; }
 			
-			const float windowVal = cosHalfWindowApprox(-std::abs(-2*m_grains[i].m_phase+1)+1, cosWindowApproxK(shape));
+			const float windowVal = cosHalfWindowApprox(-std::abs(-2*m_grains[i].m_phase+1)+1, m_shapeK);
 			s[0] += getHermiteSample(m_grains[i].m_readPoint[0], 0) * windowVal;
 			s[1] += getHermiteSample(m_grains[i].m_readPoint[1], 1) * windowVal;
 		}
@@ -253,6 +257,16 @@ void GranularPitchShifterEffect::changeSampleRate()
 	m_targetRatioInv = 1.f / m_targetRatio;
 	
 	m_oldGlide = -1;
+	
+	const float pitch = m_granularpitchshifterControls.m_pitchModel.value();
+	const float pitchSpread = m_granularpitchshifterControls.m_pitchSpreadModel.value();
+	
+	m_truePitch[0] = pitch - pitchSpread;
+	m_truePitch[1] = pitch + pitchSpread;
+	m_speed[0] = std::exp2(m_truePitch[0] * (1.f / 1200.f));
+	m_speed[1] = std::exp2(m_truePitch[1] * (1.f / 1200.f));
+	m_prefilter[0].calcFilterCoeffs(std::min(m_nyquist / (float)m_speed[0], m_nyquist) * 0.96f, 0.70710678118);
+	m_prefilter[1].calcFilterCoeffs(std::min(m_nyquist / (float)m_speed[1], m_nyquist) * 0.96f, 0.70710678118);
 }
 
 
