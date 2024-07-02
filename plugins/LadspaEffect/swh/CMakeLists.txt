@@ -11,11 +11,20 @@ ELSE()
 ENDIF()
 
 # Additional compile flags
+<<<<<<< HEAD
 if(NOT MSVC)
 	set(COMPILE_FLAGS ${COMPILE_FLAGS} -O3 -c
 		-fomit-frame-pointer -funroll-loops -ffast-math -fno-strict-aliasing
 		${PIC_FLAGS}
 	)
+=======
+if(MSVC)
+	set(COMPILE_FLAGS "${COMPILE_FLAGS} /wd4244 /wd4273 /wd4305")
+else()
+	set(COMPILE_FLAGS "${COMPILE_FLAGS} -O3 -Wall")
+	set(COMPILE_FLAGS "${COMPILE_FLAGS} -fomit-frame-pointer -funroll-loops -ffast-math -c -fno-strict-aliasing")
+	set(COMPILE_FLAGS "${COMPILE_FLAGS} ${PIC_FLAGS}")
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
 endif()
 
 # Loop over every XML file

@@ -25,12 +25,16 @@
 #include "GranularPitchShifterControlDialog.h"
 #include "GranularPitchShifterControls.h"
 #include "embed.h"
+<<<<<<< HEAD
 #include "LcdFloatSpinBox.h"
 #include "Knob.h"
 #include "GuiApplication.h"
 #include "gui_templates.h"
 #include "PixmapButton.h"
 
+=======
+#include "Knob.h"
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
 
 namespace lmms::gui
 {
@@ -42,6 +46,7 @@ GranularPitchShifterControlDialog::GranularPitchShifterControlDialog(GranularPit
 	QPalette pal;
 	pal.setBrush(backgroundRole(), PLUGIN_NAME::getIconPixmap("artwork"));
 	setPalette(pal);
+<<<<<<< HEAD
 	setFixedSize(305, 180);
 	
 	auto makeKnob = [this](KnobType style, int x, int y, const QString& hintText, const QString& unit, FloatModel* model)
@@ -155,4 +160,31 @@ GranularPitchShifterHelpView::GranularPitchShifterHelpView():QTextEdit(s_helpTex
 }
 
 
+=======
+	setFixedSize(350, 110);
+	
+	auto makeKnob = [this](int x, int y, const QString& label, const QString& hintText, const QString& unit, FloatModel* model)
+	{
+        Knob* newKnob = new Knob(KnobType::Bright26, this);
+        newKnob->move(x, y);
+        newKnob->setModel(model);
+        newKnob->setLabel(label);
+        newKnob->setHintText(hintText, unit);
+        return newKnob;
+    };
+
+	makeKnob(16, 10, tr("PITCH"), tr("Pitch:"), " cents", &controls->m_pitchModel);
+	makeKnob(156, 10, tr("PITCHSPREAD"), tr("Pitch Stereo Spread:"), " cents", &controls->m_pitchSpreadModel);
+	makeKnob(57, 10, tr("SIZE"), tr("Grain Size:"), " Hz", &controls->m_sizeModel);
+	makeKnob(16, 65, tr("SHAPE"), tr("Grain Shape:"), "", &controls->m_shapeModel);
+	makeKnob(57, 65, tr("JITTER"), tr("Jitter:"), "", &controls->m_jitterModel);
+	makeKnob(107, 65, tr("POS RAND"), tr("Position Randomization:"), "", &controls->m_posrandModel);
+	makeKnob(157, 65, tr("POSRANDSPREAD"), tr("Position Randomization Stereo Spread:"), "", &controls->m_posrandSpreadModel);
+	makeKnob(107, 15, tr("PREFILTER"), tr("Prefilter:"), "", &controls->m_prefilterModel);
+	makeKnob(207, 15, tr("DENSITY"), tr("Density:"), "x", &controls->m_densityModel);
+	makeKnob(257, 65, tr("GLIDE"), tr("Glide:"), " seconds", &controls->m_glideModel);
+	makeKnob(307, 65, tr("MINLATENCY"), tr("Minimum Latency:"), " seconds", &controls->m_minLatencyModel);
+}
+
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
 } // namespace lmms::gui

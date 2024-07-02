@@ -22,6 +22,7 @@
  *
  */
 
+<<<<<<< HEAD
 #ifndef LMMS_GRANULAR_PITCH_SHIFTER_CONTROLS_H
 #define LMMS_GRANULAR_PITCH_SHIFTER_CONTROLS_H
 
@@ -32,6 +33,13 @@
 #include "GuiApplication.h"
 #include "MainWindow.h"
 
+=======
+#ifndef GRANULARPITCHSHIFTER_CONTROL_DIALOG_H
+#define GRANULARPITCHSHIFTER_CONTROL_DIALOG_H
+
+#include "EffectControlDialog.h"
+
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
 namespace lmms
 {
 
@@ -49,6 +57,7 @@ class GranularPitchShifterControlDialog : public EffectControlDialog
 public:
 	GranularPitchShifterControlDialog(GranularPitchShifterControls* controls);
 	~GranularPitchShifterControlDialog() override = default;
+<<<<<<< HEAD
 public slots:
 	void showHelpWindow();
 };
@@ -66,10 +75,16 @@ public:
 private:
 	GranularPitchShifterHelpView();
 	static QString s_helpText;
+=======
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
 };
 
 } // namespace gui
 
 } // namespace lmms
 
+<<<<<<< HEAD
 #endif // LMMS_GRANULAR_PITCH_SHIFTER_CONTROLS_H
+=======
+#endif
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e

@@ -22,8 +22,13 @@
  *
  */
 
+<<<<<<< HEAD
 #ifndef LMMS_GRANULAR_PITCH_SHIFTER_CONTROL_DIALOG_H
 #define LMMS_GRANULAR_PITCH_SHIFTER_CONTROL_DIALOG_H
+=======
+#ifndef GRANULARPITCHSHIFTER_CONTROLS_H
+#define GRANULARPITCHSHIFTER_CONTROLS_H
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
 
 #include "EffectControls.h"
 #include "GranularPitchShifterControlDialog.h"
@@ -56,6 +61,7 @@ public:
 		return new gui::GranularPitchShifterControlDialog(this);
 	}
 	int controlCount() override { return 4; }
+<<<<<<< HEAD
 	
 public slots:
 	void updateRange();
@@ -77,6 +83,22 @@ private:
 	FloatModel m_densityModel;
 	FloatModel m_glideModel;
 	ComboBoxModel m_rangeModel;
+=======
+
+private:
+	GranularPitchShifterEffect* m_effect;
+	FloatModel m_pitchModel;
+	FloatModel m_pitchSpreadModel;
+	FloatModel m_sizeModel;
+	FloatModel m_shapeModel;
+	FloatModel m_jitterModel;
+	FloatModel m_posrandModel;
+	FloatModel m_posrandSpreadModel;
+	FloatModel m_prefilterModel;
+	FloatModel m_densityModel;
+	FloatModel m_glideModel;
+	FloatModel m_minLatencyModel;
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
 
 	friend class gui::GranularPitchShifterControlDialog;
 	friend class GranularPitchShifterEffect;
@@ -84,4 +106,8 @@ private:
 
 } // namespace lmms
 
+<<<<<<< HEAD
 #endif // LMMS_GRANULAR_PITCH_SHIFTER_CONTROL_DIALOG_H
+=======
+#endif
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e

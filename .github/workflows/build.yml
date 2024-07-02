@@ -97,21 +97,35 @@ jobs:
   #     - name: Clean up Homebrew download cache
   #       run: rm -rf ~/Library/Caches/Homebrew/downloads
   #     - name: Restore Homebrew download cache
+<<<<<<< HEAD
   #       id: cache-homebrew
+=======
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
   #       uses: actions/cache/restore@v3
   #       with:
   #         key: n/a - only restore from restore-keys
   #         restore-keys: |
+<<<<<<< HEAD
   #           homebrew-${{ matrix.arch }}-
+=======
+  #           homebrew-
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
   #         path: ~/Library/Caches/Homebrew/downloads
   #     - name: Cache ccache data
   #       uses: actions/cache@v3
   #       with:
+<<<<<<< HEAD
   #         key: "ccache-${{ github.job }}-${{ matrix.arch }}-${{ github.ref }}\
   #           -${{ github.run_id }}"
   #         restore-keys: |
   #           ccache-${{ github.job }}-${{ matrix.arch }}-${{ github.ref }}-
   #           ccache-${{ github.job }}-${{ matrix.arch }}-
+=======
+  #         key: ccache-${{ github.job }}-${{ github.ref }}-${{ github.run_id }}
+  #         restore-keys: |
+  #           ccache-${{ github.job }}-${{ github.ref }}-
+  #           ccache-${{ github.job }}-
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
   #         path: ~/Library/Caches/ccache
   #     - name: Install dependencies
   #       run: |
@@ -158,6 +172,7 @@ jobs:
   #       env:
   #         CCACHE_MAXSIZE: 500MB
   #     - name: Save Homebrew download cache
+<<<<<<< HEAD
   #       if: ${{ steps.cache-homebrew.outputs.cache-matched-key != env.key }}
   #       uses: actions/cache/save@v3
   #       with:
@@ -166,6 +181,12 @@ jobs:
   #       env:
   #         key: "homebrew-${{ matrix.arch }}\
   #           -${{ hashFiles('Brewfile.lock.json') }}"
+=======
+  #       uses: actions/cache/save@v3
+  #       with:
+  #         key: homebrew-${{ hashFiles('Brewfile.lock.json') }}
+  #         path: ~/Library/Caches/Homebrew/downloads
+>>>>>>> 13d697acf422b87e1a2d38aa59d78ca085bb1d5e
   mingw:
     strategy:
       fail-fast: false
